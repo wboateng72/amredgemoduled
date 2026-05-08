@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="description"
+    content="AMR EDGE Course Module D practical handout with copy-ready command blocks."
+  >
+  <title>AMR EDGE Course | Handout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;700&amp;display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="AMR EDGE Course home">
+      <span class="brand-kicker">AMR EDGE Course</span>
+      <span class="brand-title">Module D</span>
+    </a>
+
+    <button
+      class="nav-toggle"
+      id="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      aria-label="Open navigation"
+    >
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="handout.html" aria-current="page">Handout</a>
+      <a class="nav-link" href="project.html">Project</a>
+      <a class="nav-link" href="downloads.html">Downloads</a>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <section class="section section-workflow reveal" id="handout">
+      <div class="section-heading section-heading-inverse">
+        <p class="eyebrow">Practical Handout</p>
+        <h2>Modules are structured for reading, copying, and running.</h2>
+        <p>
+          Each module keeps the instructions concise and the shell blocks stable for
+          terminal use.
+        </p>
+      </div>
+
+      <div class="handout-top">
+        <article class="pipeline-card">
+          <p class="eyebrow">Quick Start</p>
+          <h3>Work in sequence.</h3>
+          <p>
+            Start with setup, then follow Linux basics, QC, trimming, assembly,
+            mapping, AMR detection, and phylogenetics in order.
+          </p>
+        </article>
+
+        <article class="pipeline-card">
+          <p class="eyebrow">Copy-Ready</p>
+          <h3>Commands use web-safe formatting.</h3>
+          <p>
+            The line breaks, loops, and indentation have been preserved so the code
+            blocks are easier to paste into the terminal than a Word document.
+          </p>
+        </article>
+
+        <article class="outputs-card">
+          <p class="eyebrow">Output Map</p>
+          <h3>Keep every major file in the right place.</h3>
+          <div class="output-map" id="output-map"></div>
+        </article>
+      </div>
+
+      <div class="handout-layout">
+        <div class="handout-sidebar">
+          <div class="module-tabs" id="module-tabs" aria-label="Practical handout modules"></div>
+          <p class="section-note section-note-inverse">
+            Use the module-level copy button to grab a full command pack at once.
+          </p>
+        </div>
+
+        <div class="handout-panel" id="handout-panel" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <p class="eyebrow">AMR EDGE Course</p>
+      <h3>Handout</h3>
+      <p>
+        The original practical handout is still available from the downloads page
+        if participants want the source file.
+      </p>
+    </div>
+
+    <a class="button button-secondary" href="#top">Back to top</a>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
