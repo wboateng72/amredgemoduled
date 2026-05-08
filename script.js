@@ -442,7 +442,7 @@ nanoQC raw_reads/KPN001_ONT.fastq.gz -o qc_raw/nanoqc/KPN001`,
     commandSets: [
       {
         title: "Trim paired-end reads with fastp",
-        context: "Use fastp for a streamlined paired-end trimming workflow with HTML and JSON reports.",
+        context: "Use fastp for a streamlined paired-end trimming workflow",
         code: String.raw`conda activate amr_qc
 cd ~/AMR_training
 mkdir -p trimmed_reads/fastp qc_trimmed/fastp
@@ -456,9 +456,7 @@ for r1 in raw_reads/*_R1_001.fastq.gz; do
     --detect_adapter_for_pe \
     --qualified_quality_phred 20 \
     --length_required 50 \
-    --thread 4 \
-    --html qc_trimmed/fastp/\${sample}.fastp.html \
-    --json qc_trimmed/fastp/\${sample}.fastp.json
+    --thread 4
 done`,
         expected: "The output should include trimmed paired FASTQ files plus one HTML and one JSON report per sample.",
       },
@@ -509,12 +507,12 @@ multiqc qc_raw qc_trimmed -o qc_trimmed/multiqc`,
         context: "Assemble Illumina or hybrid data into draft bacterial genomes.",
         code: String.raw`conda activate amr_assembly
 cd ~/AMR_training
-mkdir -p assemblies/unicycler logs
+mkdir -p assemblies/unicycler
 
 for r1 in trimmed_reads/fastp/*_R1.trim.fastq.gz; do
   sample=$(basename "$r1" _R1.trim.fastq.gz)
   r2="trimmed_reads/fastp/\${sample}_R2.trim.fastq.gz"
-  unicycler -1 "$r1" -2 "$r2" -o assemblies/unicycler/\${sample} -t 4
+  unicycler -1 "$r1" -2 "$r2" -o assemblies/unicycler/\${sample} -t 4 --min_fasta_length 200
 done`,
         expected: "Each sample directory should contain assembly.fasta, assembly.gfa, and a Unicycler log.",
       },
@@ -522,8 +520,7 @@ done`,
         title: "Run long-read assembly with Flye",
         context: "Use Flye for ONT long-read assembly with an estimated genome size.",
         code: String.raw`mkdir -p assemblies/flye
-sample=KPN001
-flye --nano-hq raw_reads/\${sample}_ONT.fastq.gz --out-dir assemblies/flye/\${sample} --threads 4 --genome-size 5m`,
+flye --nano-hq raw_reads/KPN001.fastq.gz --out-dir assemblies/flye/KPN001 --threads 4 --genome-size 5m`,
         expected: "Flye should produce assembly.fasta, assembly_graph.gfa, flye.log, and assembly_info.txt.",
       },
       {
@@ -618,7 +615,7 @@ done`,
 cd ~/AMR_training
 mkdir -p assembly_qc/quast
 
-quast.py assemblies/final/*.fasta -o assembly_qc/quast -t 4`,
+quast.py assemblies/final/*.fasta -o assembly_qc/quast -t 4 -m 200`,
         expected: "QUAST should create report.html, report.tsv, and transposed_report.tsv inside assembly_qc/quast.",
       },
       {
@@ -628,8 +625,8 @@ quast.py assemblies/final/*.fasta -o assembly_qc/quast -t 4`,
 cd ~/AMR_training
 mkdir -p assembly_qc/checkm
 
-checkm lineage_wf -x fasta -t 4 assemblies/final assembly_qc/checkm 2>&1 | tee logs/checkm.log`,
-        expected: "CheckM should create lineage results and logs inside assembly_qc/checkm.",
+checkm lineage_wf -x fasta -t 4 assemblies/final assembly_qc/checkm`,
+        expected: "CheckM should create lineage results",
       },
       {
         title: "Create a CheckM summary table",
@@ -644,7 +641,7 @@ checkm lineage_wf -x fasta -t 4 assemblies/final assembly_qc/checkm 2>&1 | tee l
     short: "AMR Detection",
     title: "AMR detection with AMRFinderPlus and ABRicate",
     summary:
-      "This module turns assemblies into resistance predictions while emphasizing database version tracking, coverage review, and phenotype-genotype caution.",
+      "This module turns assemblies into resistance predictions.",
     outcomes: [
       "Capture AMRFinderPlus software and database versions",
       "Run AMRFinderPlus on final assemblies",
@@ -681,7 +678,7 @@ done`,
         context: "Compare resistance calls across databases and build a simple summary table.",
         code: String.raw`mkdir -p amr/abricate
 abricate --setupdb
-abricate --list > logs/abricate_database_list.tsv
+abricate --list
 abricate --version
 
 for asm in assemblies/final/*.fasta; do
@@ -712,8 +709,8 @@ abricate --summary amr/abricate/*.abricate_ncbi.tsv > amr/abricate/abricate_ncbi
         title: "Check species and closest reference with BactInspector",
         context: "Use a reference-checking step before building a single-species phylogeny.",
         code: String.raw`# Example placeholder; replace database path with your workshop database
-bactinspector --help 2>&1 | tee logs/bactinspector_help.txt
-bactinspector --query assemblies/final/KPN001.fasta --db db/bactinspector --out phylogeny/bactinspector_KPN001`,
+bactinspector --help
+bactinspector --query assemblies/final/KPN001.fasta --out phylogeny/bactinspector_KPN001`,
         expected: "The result files should help confirm species identity and support reference selection.",
       },
       {
@@ -721,7 +718,7 @@ bactinspector --query assemblies/final/KPN001.fasta --db db/bactinspector --out 
         context: "Create per-sample SNP calls and aligned outputs against the chosen reference.",
         code: String.raw`conda activate amr_mapping
 cd ~/AMR_training
-mkdir -p phylogeny/snippy logs
+mkdir -p phylogeny/snippy
 
 for r1 in trimmed_reads/fastp/*_R1.trim.fastq.gz; do
   sample=$(basename "$r1" _R1.trim.fastq.gz)
